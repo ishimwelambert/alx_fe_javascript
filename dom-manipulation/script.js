@@ -141,6 +141,17 @@ async function postQuoteToServer(quote) {
   }
 }
 
+// New syncQuotes function to manually sync quotes with the server
+async function syncQuotes() {
+  // Fetch quotes from server and resolve any conflicts
+  await fetchQuotesFromServer();
+
+  // Post any new local quotes to the server
+  quotes.forEach(quote => postQuoteToServer(quote));
+
+  alert("Quotes synced with server!");
+}
+
 // Periodic data sync with server every minute
 setInterval(fetchQuotesFromServer, 60000);
 
