@@ -69,6 +69,31 @@ function saveQuotes() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
 }
 
+// Create the add quote form dynamically
+function createAddQuoteForm() {
+  const formContainer = document.createElement("div");
+
+  const quoteInput = document.createElement("input");
+  quoteInput.id = "newQuoteText";
+  quoteInput.type = "text";
+  quoteInput.placeholder = "Enter a new quote";
+
+  const categoryInput = document.createElement("input");
+  categoryInput.id = "newQuoteCategory";
+  categoryInput.type = "text";
+  categoryInput.placeholder = "Enter quote category";
+
+  const addButton = document.createElement("button");
+  addButton.textContent = "Add Quote";
+  addButton.onclick = addQuote;
+
+  formContainer.appendChild(quoteInput);
+  formContainer.appendChild(categoryInput);
+  formContainer.appendChild(addButton);
+
+  document.body.appendChild(formContainer);
+}
+
 // Export quotes to JSON
 function exportToJson() {
   const dataStr = JSON.stringify(quotes);
@@ -158,5 +183,6 @@ setInterval(fetchQuotesFromServer, 60000);
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
   populateCategories();
+  createAddQuoteForm(); // Call to create the form on page load
   filterQuotes();
 });
