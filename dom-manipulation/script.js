@@ -1,5 +1,5 @@
 // Array to store quotes, with each quote having text and category properties.
-const quotes = [
+let quotes = [
   { text: "The only limit to our realization of tomorrow is our doubts of today.", category: "Motivation" },
   { text: "Life is 10% what happens to us and 90% how we react to it.", category: "Life" },
   // Add more initial quotes as desired
@@ -62,5 +62,56 @@ function createAddQuoteForm() {
 // Call the function to create the form on page load
 createAddQuoteForm();
 
-// Event listener for showing a random quote
+// Export quotes to JSON file
+function exportToJson() {
+  const dataStr = JSON.stringify(quotes, null, 2);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "quotes.json";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+// Import quotes from JSON file
+function importFromJsonFile(event) {
+  const fileReader = new FileReader();
+  fileReader.onload = function(event) {
+    try {
+      const importedQuotes = JSON.parse(event.target.result);
+      if (Array.isArray(importedQuotes)) {
+        quotes.push(...importedQuotes);
+        saveQuotes();
+        alert("Quotes imported successfully!");
+      } else {
+        alert("Invalid format! Please upload a JSON file with an array of quotes.");
+      }
+    } catch (error) {
+      alert("Error reading file: " + error.message);
+    }
+  };
+  fileReader.readAsText(event.target.files[0]);
+}
+
+// Event listeners
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+document.getElementById("addQuoteButton").addEventListener("click", addQuote);
+
+// Optional: Function to save quotes to localStorage for persistence
+function saveQuotes() {
+  localStorage.setItem("quotes", JSON.stringify(quotes));
+}
+
+// Optional: Load quotes from localStorage on page load
+function loadQuotes() {
+  const savedQuotes = JSON.parse(localStorage.getItem("quotes"));
+  if (savedQuotes) {
+    quotes = savedQuotes;
+  }
+}
+
+// Load quotes if available in local storage
+loadQuotes();
